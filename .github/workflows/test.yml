@@ -8,11 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     container: jupyter/pyspark-notebook:f646d2b2a3af
     steps:
-      - name: Install dependencies
+      - name: Install python dependencies
         run: |
           python -m pip install pybind11 pytest
           export PYTHONPATH="${SPARK_HOME}/python/:$PYTHONPATH"
           export PYTHONPATH="${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip:$PYTHONPATH"
+      - name: Install scala
+        run: |
           sudo apt-get update
           sudo apt-get upgrade -y
           sudo apt-get install default-jdk -y
