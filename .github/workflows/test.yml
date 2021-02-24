@@ -4,10 +4,8 @@ on: push
 
 
 jobs:
-
-  container:
+  my_first_job:
     runs-on: ubuntu-latest
-    uses: actions/checkout@v2
     strategy:
       matrix:
 #        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
@@ -24,6 +22,7 @@ jobs:
 
 
     steps:
+      - uses: actions/checkout@v2
       - name: Install python dependencies
         run: |
           python -m pip install pybind11 pytest
