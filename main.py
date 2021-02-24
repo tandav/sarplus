@@ -13,4 +13,11 @@ spark = (
     .getOrCreate()
 )
 
-print(spark.sparkContext.range(256).collect())
+
+df = spark.sparkContext.range(256)
+
+# print(df.collect())
+
+df.coalesce(1).write.format("com.microsoft.sarplus").mode("overwrite").save('sample-output.sar')
+
+
