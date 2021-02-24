@@ -51,12 +51,15 @@ jobs:
 #          python main.py
 ##          sbt test
 
+
+# todo: try pyarrow==0.14.1
+
   using_raw_vm:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-#        python-version: [3.5, 3.6]
-#        spark-version: [2.3.0, 2.4.1]
+#        python-version: [3.5, 3.6, 3.7]
+#        spark-version: [2.3.0, 2.4.1., 2.4.3]
         python-version: [3.6]
         spark-version: [2.4.1]
 
