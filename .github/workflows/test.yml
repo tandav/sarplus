@@ -2,18 +2,18 @@ name: tryna run optimized sarplus model
 
 on: push
 
-
-#7d427e7a4dde failed
+# 2.4.1 sarplus:0.2.6
+# 7d427e7a4dde, f646d2b2a3af failed
 
 jobs:
   my_first_job:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix:
 #        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
 #        pyspark_tag: [f646d2b2a3af]
-        pyspark_tag: [f646d2b2a3af, 4cdbc9cdb7d1] # 2.4.1
+        pyspark_tag: [4cdbc9cdb7d1] # 2.4.1
 
 
     container:
