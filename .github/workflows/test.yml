@@ -6,11 +6,18 @@ on: push
 jobs:
   container:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
+
+
     container:
-      image: jupyter/pyspark-notebook:f646d2b2a3af
+      image: jupyter/pyspark-notebook:${{ matrix.pyspark_tag }}
       env:
         GRANT_SUDO: yes
       options: --user root
+
 
     steps:
       - name: Install python dependencies
@@ -18,21 +25,21 @@ jobs:
           python -m pip install pybind11 pytest
           export PYTHONPATH="${SPARK_HOME}/python/:$PYTHONPATH"
           export PYTHONPATH="${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip:$PYTHONPATH"
-      - name: Install scala
-        run: |
-          apt-get update
-          apt-get upgrade -y
-          apt-get install default-jdk -y
-          apt-get install -y gnupg2 gnupg gnupg1
-          wget www.scala-lang.org/files/archive/scala-2.13.0.deb
-          dpkg -i scala*.deb
-          echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-          apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-          apt-get update
-          apt-get install sbt -y
+#      - name: Install scala
+#        run: |
+#          apt-get update
+#          apt-get upgrade -y
+#          apt-get install default-jdk -y
+#          apt-get install -y gnupg2 gnupg gnupg1
+#          wget www.scala-lang.org/files/archive/scala-2.13.0.deb
+#          dpkg -i scala*.deb
+#          echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+#          apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+#          apt-get update
+#          apt-get install sbt -y
 
 
       - name: Test
         run: |
-
+          python main.py
 #          sbt test
