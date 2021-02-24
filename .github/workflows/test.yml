@@ -4,10 +4,10 @@ on: push
 
 
 jobs:
-  uses: actions/checkout@v2
+
   container:
     runs-on: ubuntu-latest
-
+    uses: actions/checkout@v2
     strategy:
       matrix:
 #        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
