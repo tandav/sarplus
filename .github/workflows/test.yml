@@ -6,7 +6,12 @@ on: push
 jobs:
   container:
     runs-on: ubuntu-latest
-    container: jupyter/pyspark-notebook:f646d2b2a3af
+    container:
+      image: jupyter/pyspark-notebook:f646d2b2a3af
+      env:
+        GRANT_SUDO: yes
+      options: --user root
+
     steps:
       - name: Install python dependencies
         run: |
