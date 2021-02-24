@@ -3,9 +3,6 @@ name: Test
 on: push
 
 
-
-
-
 jobs:
   container:
     runs-on: ubuntu-latest
@@ -13,8 +10,6 @@ jobs:
     steps:
       - name: Install dependencies
       - run: |
-        echo "This job does specify a container."
-        echo "It runs in the container instead of the VM."
         python -V
         pyspark --version
         python -m pip install pybind11 pytest
