@@ -4,6 +4,7 @@ on: push
 
 
 jobs:
+  uses: actions/checkout@v2
   container:
     runs-on: ubuntu-latest
 
