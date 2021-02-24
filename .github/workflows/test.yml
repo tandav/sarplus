@@ -16,7 +16,8 @@ jobs:
       image: jupyter/pyspark-notebook:${{ matrix.pyspark_tag }}
       env:
         GRANT_SUDO: yes
-      volumes: $GITHUB_WORKSPACE:/home/jovyan
+      volumes:
+        - $GITHUB_WORKSPACE:/home/jovyan
       options: --user root
 
 
