@@ -3,24 +3,52 @@ name: Test
 on: push
 
 
+#    strategy:
+#      matrix:
+#        python-version: [3.7, 3.8]
+#
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Set up Python ${{ matrix.python-version }}
+#      uses: actions/setup-python@v2
+#      with:
+#        python-version: ${{ matrix.python-version }}
+#    - name: Install dependencies
+#      run: |
+#        python -m pip install --upgrade pip
+#        pip install numpy
+#    - name: Simple Test
+#      run: |
+#        python main.py
+
 jobs:
-  build:
-
+  container:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8]
-
+    container: jupyter/pyspark-notebook
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install numpy
-    - name: Simple Test
-      run: |
-        python main.py
+      - run: |
+          echo "This job does specify a container."
+          echo "It runs in the container instead of the VM."
+          python -V
+          pyspark --version
+
+        name: Run in container
+
+
+#
+#jobs:
+#  vm:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: |
+#          echo This job does not specify a container.
+#          echo It runs directly on the virtual machine.
+#        name: Run on VM
+#  container:
+#    runs-on: ubuntu-latest
+#    container: node:10.16-jessie
+#    steps:
+#      - run: |
+#          echo This job does specify a container.
+#          echo It runs in the container instead of the VM.
+#        name: Run in container
