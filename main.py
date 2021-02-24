@@ -13,8 +13,7 @@ spark = (
     .getOrCreate()
 )
 
-
-df = spark.sparkContext.range(256)
+df = spark.read.csv("sample-input.txt", header=True, inferSchema=True)
 
 # print(df.collect())
 
