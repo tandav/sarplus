@@ -9,7 +9,8 @@ jobs:
     strategy:
       matrix:
 #        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
-        pyspark_tag: [f646d2b2a3af]
+#        pyspark_tag: [f646d2b2a3af]
+        pyspark_tag: [f646d2b2a3af, 4cdbc9cdb7d1, 7d427e7a4dde] # 2.4.1
 
 
     container:
