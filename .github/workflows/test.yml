@@ -15,16 +15,16 @@ jobs:
           export PYTHONPATH="${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip:$PYTHONPATH"
       - name: Install scala
         run: |
-          sudo apt-get update
-          sudo apt-get upgrade -y
-          sudo apt-get install default-jdk -y
+          apt-get update
+          apt-get upgrade -y
+          apt-get install default-jdk -y
           apt-get install -y gnupg2 gnupg gnupg1
           wget www.scala-lang.org/files/archive/scala-2.13.0.deb
-          sudo dpkg -i scala*.deb
+          dpkg -i scala*.deb
           echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-          sudo apt-get update
-          sudo apt-get install sbt -y
+          apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+          apt-get update
+          apt-get install sbt -y
 
       - name: Test
         run: |
