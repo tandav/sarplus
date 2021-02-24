@@ -65,45 +65,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: cd test
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+           python -m pip install --upgrade pip
+           python -m pip install pyspark==${{matrix.spark-version}}
+           python -m pip install pytest pandas pybind11 pyarrow sklearn
+
+      - name: build scala
         run: |
           cd scala
-          ls -l
-          pwd
-          ls -l ..
-          cd ..
-          cd scala
-          cd ../python
-          cd ../scala
+          sparkversion=${{matrix.spark-version}} sbt package
 
-      - name: cd test 2
+      - name: build python
         run: |
-          pwd
-          ls -l
-          cd ../python
-          pwd
-          ls -l
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#      - name: Install dependencies
-#        run: |
-#           python -m pip install --upgrade pip
-#           python -m pip install pyspark==${{matrix.spark-version}}
-#           python -m pip install pytest pandas pybind11 pyarrow sklearn
+          cd python
+          python setup.py install
 
-#      - name: build scala
-#        run: |
-#          cd scala
-#          sparkversion=${{matrix.spark-version}} sbt package
-#
-#      - name: build python
-#        run: |
-#          cd ../python
-#          python setup.py install
-#
-#      - name: test python
-#        run: |
-#          pytest tests --doctest-modules --junitxml=junit/test-results.xml
+      - name: test python
+        run: |
+          cd python
+          pytest tests --doctest-modules --junitxml=junit/test-results.xml
 
