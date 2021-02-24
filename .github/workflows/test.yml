@@ -59,7 +59,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7]
-        spark-version: [2.3.0, 2.4.1., 2.4.3]
+        spark-version: [2.3.0, 2.4.1, 2.4.3]
 #        python-version: [3.6]
 #        spark-version: [2.4.1]
 
