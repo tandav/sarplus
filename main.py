@@ -1,7 +1,5 @@
 import os
-
-# SUBMIT_ARGS = "--packages eisber:sarplus:0.2.6 pyspark-shell"
-# os.environ["PYSPARK_SUBMIT_ARGS"] = SUBMIT_ARGS
+os.environ["PYSPARK_SUBMIT_ARGS"] = "--packages eisber:sarplus:0.2.6 pyspark-shell"
 
 from pyspark.sql import SparkSession
 

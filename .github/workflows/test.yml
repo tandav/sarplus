@@ -1,4 +1,4 @@
-name: Test
+name: tryna run optimized sarplus model
 
 on: push
 
@@ -17,7 +17,7 @@ jobs:
       env:
         GRANT_SUDO: yes
       volumes:
-        - $GITHUB_WORKSPACE:/home/jovyan
+        - ${{ github.workspace }}:/home/jovyan
       options: --user root
 
 
