@@ -6,10 +6,11 @@ on: push
 # 7d427e7a4dde, f646d2b2a3af, 4cdbc9cdb7d1 failed
 
 jobs:
-  using_jupyter_docker_stacks:
+  matrix_version_search_docker:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
+      fail-fast: false
       matrix:
         python_version: [3.5, 3.6, 3.7]
 #        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
