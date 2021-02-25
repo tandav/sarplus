@@ -60,36 +60,42 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        python-version: [3.5, 3.6, 3.7]
-        spark-version: [2.3.0, 2.4.1, 2.4.3]
-#        python-version: [3.6]
-#        spark-version: [2.4.1]
+#        python-version: [3.5, 3.6, 3.7]
+#        spark-version: [2.3.0, 2.4.1, 2.4.3]
+        python-version: [3.6]
+        spark-version: [2.4.1]
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-           python -m pip install --upgrade pip
-           python -m pip install pyspark==${{matrix.spark-version}}
-           python -m pip install pytest pandas pybind11 pyarrow==0.14.1 sklearn
-
-      - name: build scala
+      - name: test sbt
         run: |
           cd scala
+          which sbt
           sparkversion=${{matrix.spark-version}} sbt package
 
-      - name: build python
-        run: |
-          cd python
-          python setup.py install
-
-      - name: test python
-        run: |
-          cd python
-          pytest tests --doctest-modules --junitxml=junit/test-results.xml
+#      - name: Set up Python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#      - name: Install dependencies
+#        run: |
+#           python -m pip install --upgrade pip
+#           python -m pip install pyspark==${{matrix.spark-version}}
+#           python -m pip install pytest pandas pybind11 pyarrow==0.14.1 sklearn
+#
+#      - name: build scala
+#        run: |
+#          cd scala
+#          sparkversion=${{matrix.spark-version}} sbt package
+#
+#      - name: build python
+#        run: |
+#          cd python
+#          python setup.py install
+#
+#      - name: test python
+#        run: |
+#          cd python
+#          pytest tests --doctest-modules --junitxml=junit/test-results.xml
 
