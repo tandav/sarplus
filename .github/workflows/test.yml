@@ -71,8 +71,10 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        python-version: [3.5, 3.6, 3.7]
-        spark-version: [2.3.0, 2.3.2]
+#        python-version: [3.5, 3.6, 3.7]
+#        spark-version: [2.3.0, 2.3.2]
+        python-version: [3.6]
+        spark-version: [2.3.2]
 
     steps:
       - uses: actions/checkout@v2
@@ -97,13 +99,18 @@ jobs:
           cd scala
           sparkversion=${{matrix.spark-version}} sbt package
 
-      - name: build python
-        run: |
-          cd python
-          python setup.py install
+#      - name: build python
+#        run: |
+#          cd python
+#          python setup.py install
+#
+#      - name: test python
+#        run: |
+#          cd python
+#          pytest tests --doctest-modules --junitxml=junit/test-results.xml
 
-      - name: test python
-        run: |
-          cd python
-          pytest tests --doctest-modules --junitxml=junit/test-results.xml
-
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_artifact
+          path: scala/target/scala-2.11/sarplus_2.11-0.2.6.jar
