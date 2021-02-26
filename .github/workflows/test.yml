@@ -6,56 +6,56 @@ on: push
 # 7d427e7a4dde, f646d2b2a3af, 4cdbc9cdb7d1 failed
 
 jobs:
-  matrix_version_search_docker:
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        python_version: [3.5, 3.6, 3.7]
-#        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
-#        pyspark_tag: [f646d2b2a3af]
-        spark_version: [2.3.0, 2.3.2]
-
-
-    container:
-      image: python:${{ matrix.python_version }}
-      env:
-        GRANT_SUDO: yes
-      volumes:
-        - ${{ github.workspace }}:/usr/src/myapp
-      options: --user root
-
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pyspark==${{ matrix.spark_version }}
-          python -m pip install pytest pandas pybind11 pyarrow==0.14.1 sklearn
-          cd python
-          python setup.py install
-
-      - name: Install scala
-        run: |
-          apt-get update
-          apt-get upgrade -y
-          apt-get install default-jdk -y
-          apt-get install -y gnupg2 gnupg gnupg1
-          wget www.scala-lang.org/files/archive/scala-2.13.0.deb
-          dpkg -i scala*.deb
-          echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-          apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-          apt-get update
-          apt-get install sbt -y
-          cd scala
-          sparkversion=${{matrix.spark_version}} sbt package
-
-      - name: Test
-        run: |
-          cd python
-          pytest tests --doctest-modules --junitxml=junit/test-results.xml
+#  matrix_version_search_docker:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      max-parallel: 1
+#      fail-fast: false
+#      matrix:
+#        python_version: [3.5, 3.6, 3.7]
+##        pyspark_tag: [f646d2b2a3af, 0d96d93393f7]
+##        pyspark_tag: [f646d2b2a3af]
+#        spark_version: [2.3.0, 2.3.2]
+#
+#
+#    container:
+#      image: python:${{ matrix.python_version }}
+#      env:
+#        GRANT_SUDO: yes
+#      volumes:
+#        - ${{ github.workspace }}:/usr/src/myapp
+#      options: --user root
+#
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Install python dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          python -m pip install pyspark==${{ matrix.spark_version }}
+#          python -m pip install pytest pandas pybind11 pyarrow==0.14.1 sklearn
+#          cd python
+#          python setup.py install
+#
+#      - name: Install scala
+#        run: |
+#          apt-get update
+#          apt-get upgrade -y
+#          apt-get install default-jdk -y
+#          apt-get install -y gnupg2 gnupg gnupg1
+#          wget www.scala-lang.org/files/archive/scala-2.13.0.deb
+#          dpkg -i scala*.deb
+#          echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+#          apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+#          apt-get update
+#          apt-get install sbt -y
+#          cd scala
+#          sparkversion=${{matrix.spark_version}} sbt package
+#
+#      - name: Test
+#        run: |
+#          cd python
+#          pytest tests --doctest-modules --junitxml=junit/test-results.xml
 
 
 #          python main.py
@@ -65,48 +65,45 @@ jobs:
 #          export PYTHONPATH="${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip:$PYTHONPATH"
 
 
-#  using_raw_vm:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      max-parallel: 1
-#      fail-fast: false
-#      matrix:
-##        python-version: [3.5, 3.6, 3.7]
-##        spark-version: [2.3.0, 2.4.1, 2.4.3]
-#        python-version: [3.6]
-#        spark-version: [2.4.1]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: test sbt
-#        run: |
-#          cd scala
-#          which sbt
-#          sparkversion=${{matrix.spark-version}} sbt package
+  using_raw_vm:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        python-version: [3.5, 3.6, 3.7]
+        spark-version: [2.3.0, 2.3.2]
 
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#      - name: Install dependencies
-#        run: |
-#           python -m pip install --upgrade pip
-#           python -m pip install pyspark==${{matrix.spark-version}}
-#           python -m pip install pytest pandas pybind11 pyarrow==0.14.1 sklearn
-#
-#      - name: build scala
-#        run: |
-#          cd scala
-#          sparkversion=${{matrix.spark-version}} sbt package
-#
-#      - name: build python
-#        run: |
-#          cd python
-#          python setup.py install
-#
-#      - name: test python
-#        run: |
-#          cd python
-#          pytest tests --doctest-modules --junitxml=junit/test-results.xml
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: test sbt
+        run: |
+          cd scala
+          sparkversion=${{matrix.spark-version}} sbt package
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+           python -m pip install --upgrade pip
+           python -m pip install pyspark==${{matrix.spark-version}}
+           python -m pip install pytest pandas pybind11 pyarrow==0.14.1 sklearn
+
+      - name: build scala
+        run: |
+          cd scala
+          sparkversion=${{matrix.spark-version}} sbt package
+
+      - name: build python
+        run: |
+          cd python
+          python setup.py install
+
+      - name: test python
+        run: |
+          cd python
+          pytest tests --doctest-modules --junitxml=junit/test-results.xml
 
