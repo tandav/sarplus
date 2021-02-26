@@ -79,16 +79,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: test sbt
+      - name: sbt package
         run: |
           cd scala
           sparkversion=${{matrix.spark-version}} sbt package
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: install python dependencies
         run: |
            python -m pip install --upgrade pip
            python -m pip install pyspark==${{matrix.spark-version}}
@@ -99,18 +99,20 @@ jobs:
           cd scala
           sparkversion=${{matrix.spark-version}} sbt package
 
-#      - name: build python
-#        run: |
-#          cd python
-#          python setup.py install
-#
-#      - name: test python
-#        run: |
-#          cd python
-#          pytest tests --doctest-modules --junitxml=junit/test-results.xml
+      - name: build python
+        run: |
+          cd python
+          python setup.py install
+
+      - name: test python
+        run: |
+          cd python
+          pytest tests --doctest-modules --junitxml=junit/test-results.xml
 
       - name: upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: test_artifact
-          path: scala/target/scala-2.11/sarplus_2.11-0.2.6.jar
+          name: my-artifacts
+          path: |
+            scala/target/scala-2.11/sarplus_2.11-0.2.6.jar
+            python
