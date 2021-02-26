@@ -108,6 +108,8 @@ jobs:
         run: |
           cd python
           pytest tests --doctest-modules --junitxml=junit/test-results.xml
+          cd ..
+          zip -r python.zip python
 
       - name: upload artifacts
         uses: actions/upload-artifact@v2
@@ -115,4 +117,4 @@ jobs:
           name: my-artifacts
           path: |
             scala/target/scala-2.11/sarplus_2.11-0.2.6.jar
-            python
+            python.zip
