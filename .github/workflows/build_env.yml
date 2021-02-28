@@ -21,23 +21,24 @@ jobs:
         run: |
           yum -y install zip
           yum group install -y "Development Tools" # install gcc on centos
-          ls
-          pwd
 
       - name: build conda env
         run: |
           conda create --yes --name sar_env python=3.6
-          ls
-          pwd
           sar_env/bin/python -m pip install pandas pybind11 pyarrow==0.14.1
           cd python
           ../sar_env/bin/python setup.py install
           cd ..
           zip -rq sar_env.zip sar_env
 
+#      - name: upload artifacts
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: sar_env
+#          path: |
+#            sar_env.zip
+
       - name: upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: sar_env
-          path: |
-            sar_env.zip
+          path: sar_env.zip
