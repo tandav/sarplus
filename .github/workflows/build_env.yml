@@ -3,8 +3,9 @@ name: build env for sarplus for centos7
 on: push
 
 jobs:
-  build env:
+  build-env:
     runs-on: ubuntu-latest
+
     container:
       image: conda/miniconda3-centos7
       env:
