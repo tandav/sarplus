@@ -75,7 +75,7 @@ class SARPlus:
 
         # threshold - items below this number get set to zero in coocurrence counts
 
-        df.createOrReplaceTempView(self.f("{prefix}df_train_input"))
+        df.createOrReplaceTempView(self.f("df_train_input"))
 
         if self.timedecay_formula:
             # WARNING: previously we would take the last value in training dataframe and set it
@@ -126,7 +126,7 @@ class SARPlus:
 
                 df = self.spark.sql(query)
 
-        df.createOrReplaceTempView(self.f("{prefix}df_train"))
+        df.createOrReplaceTempView(self.f("df_train"))
 
         log.info("sarplus.fit 1/2: compute item cooccurences...")
 
@@ -154,7 +154,7 @@ class SARPlus:
                     "SELECT i1 i, value AS margin FROM {prefix}item_cooccurrence WHERE i1 = i2"
                 )
             )
-            item_marginal.createOrReplaceTempView(self.f("{prefix}item_marginal"))
+            item_marginal.createOrReplaceTempView(self.f("item_marginal"))
 
         if self.similarity_type == SIM_COOCCUR:
             self.item_similarity = item_cooccurrence
@@ -226,7 +226,7 @@ class SARPlus:
         Arguments:
             test (pySpark.DataFrame): input dataframe which contains test users.
         """
-        test.createOrReplaceTempView(self.f("{prefix}df_test"))
+        test.createOrReplaceTempView(self.f("df_test"))
 
         query = self.f(
             "SELECT DISTINCT {col_user} FROM {prefix}df_test CLUSTER BY {col_user}"
@@ -294,7 +294,7 @@ class SARPlus:
         )
 
         self.get_user_affinity(test).createOrReplaceTempView(
-            self.f("{prefix}user_affinity")
+            self.f("user_affinity")
         )
 
         # map item ids to index space
@@ -356,7 +356,7 @@ class SARPlus:
             .apply(sar_predict_udf)
         )
 
-        df_preds.createOrReplaceTempView(self.f("{prefix}predictions"))
+        df_preds.createOrReplaceTempView(self.f("predictions"))
 
         return self.spark.sql(
             self.f(
