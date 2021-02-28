@@ -95,8 +95,8 @@ class SARPlus:
             SELECT
                  {col_user}, {col_item}, 
                  SUM({col_rating} * EXP(-log(2) * (latest_timestamp - CAST({col_timestamp} AS long)) / ({time_decay_coefficient} * 3600 * 24))) as {col_rating}
-            FROM {prefix}df_train_input,
-                 (SELECT CAST(MAX({col_timestamp}) AS long) latest_timestamp FROM {prefix}df_train_input)
+            FROM df_train_input,
+                 (SELECT CAST(MAX({col_timestamp}) AS long) latest_timestamp FROM df_train_input)
             GROUP BY {col_user}, {col_item} 
             CLUSTER BY {col_user} 
             """
@@ -118,7 +118,7 @@ class SARPlus:
                 SELECT
                     {col_user}, {col_item}, {col_rating}, 
                     ROW_NUMBER() OVER (PARTITION BY {col_user}, {col_item} ORDER BY {col_timestamp} DESC) latest
-                FROM {prefix}df_train_input
+                FROM df_train_input
                 )
                 WHERE latest = 1
                 """
@@ -134,7 +134,7 @@ class SARPlus:
         query = self.f(
             """
         SELECT A.{col_item} i1, B.{col_item} i2, COUNT(*) value
-        FROM   {prefix}df_train A INNER JOIN {prefix}df_train B
+        FROM   df_train A INNER JOIN df_train B
                ON A.{col_user} = B.{col_user} AND A.{col_item} <= b.{col_item}  
         GROUP  BY A.{col_item}, B.{col_item}
         HAVING COUNT(*) >= {threshold}
@@ -163,8 +163,8 @@ class SARPlus:
                 """
             SELECT i1, i2, value / (M1.margin + M2.margin - value) AS value
             FROM {prefix}item_cooccurrence A 
-                INNER JOIN {prefix}item_marginal M1 ON A.i1 = M1.i 
-                INNER JOIN {prefix}item_marginal M2 ON A.i2 = M2.i
+                INNER JOIN item_marginal M1 ON A.i1 = M1.i 
+                INNER JOIN item_marginal M2 ON A.i2 = M2.i
             CLUSTER BY i1, i2
             """
             )
@@ -174,8 +174,8 @@ class SARPlus:
                 """
             SELECT i1, i2, value / (M1.margin * M2.margin) AS value
             FROM {prefix}item_cooccurrence A 
-                INNER JOIN {prefix}item_marginal M1 ON A.i1 = M1.i 
-                INNER JOIN {prefix}item_marginal M2 ON A.i2 = M2.i
+                INNER JOIN item_marginal M1 ON A.i1 = M1.i 
+                INNER JOIN item_marginal M2 ON A.i2 = M2.i
             CLUSTER BY i1, i2
             """
             )
@@ -229,7 +229,7 @@ class SARPlus:
         test.createOrReplaceTempView(self.f("df_test"))
 
         query = self.f(
-            "SELECT DISTINCT {col_user} FROM {prefix}df_test CLUSTER BY {col_user}"
+            "SELECT DISTINCT {col_user} FROM df_test CLUSTER BY {col_user}"
         )
 
         df_test_users = self.spark.sql(query)
@@ -240,7 +240,7 @@ class SARPlus:
         query = self.f(
             """
           SELECT a.{col_user}, a.{col_item}, CAST(a.{col_rating} AS double) {col_rating}
-          FROM {prefix}df_train a INNER JOIN {prefix}df_test_users b ON a.{col_user} = b.{col_user} 
+          FROM df_train a INNER JOIN {prefix}df_test_users b ON a.{col_user} = b.{col_user} 
           DISTRIBUTE BY {col_user}
           SORT BY {col_user}, {col_item}          
         """
@@ -305,7 +305,7 @@ class SARPlus:
             FROM 
             (
                 SELECT {col_user}, b.idx, {col_rating} rating
-                FROM {prefix}user_affinity JOIN {prefix}item_mapping b ON {col_item} = b.i1 
+                FROM user_affinity JOIN {prefix}item_mapping b ON {col_item} = b.i1 
             )
             CLUSTER BY {col_user}
         """
@@ -362,7 +362,7 @@ class SARPlus:
             self.f(
                 """
         SELECT userID {col_user}, b.i1 {col_item}, score
-        FROM {prefix}predictions p, {prefix}item_mapping b
+        FROM predictions p, {prefix}item_mapping b
         WHERE p.itemID = b.idx
         """
             )
@@ -382,7 +382,7 @@ class SARPlus:
             raise ValueError("Not implemented")
 
         self.get_user_affinity(test).write.mode("overwrite").saveAsTable(
-            self.f("{prefix}user_affinity")
+            self.f("user_affinity")
         )
 
         # user_affinity * item_similarity
@@ -397,7 +397,7 @@ class SARPlus:
                  SUM(df.{col_rating} * S.value) AS score,
                  row_number() OVER(PARTITION BY {col_user} ORDER BY SUM(df.{col_rating} * S.value) DESC) rank
           FROM   
-            {prefix}user_affinity df, 
+            user_affinity df, 
             {prefix}item_similarity S
           WHERE df.{col_item} = S.i1
           GROUP BY df.{col_user}, S.i2
