@@ -1,0 +1,38 @@
+name: build env for sarplus for centos7
+
+on: push
+
+jobs:
+  build env:
+    runs-on: ubuntu-latest
+    container:
+      image: conda/miniconda3-centos7
+      env:
+        GRANT_SUDO: yes
+      volumes:
+        - ${{ github.workspace }}:/usr/src/myapp
+      options: --user root
+
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: install tools
+        run: |
+          yum -y install zip
+          yum group install -y "Development Tools" # install gcc on centos
+
+      - name: build conda env
+        run: |
+          conda create --yes --name sar_env python=3.6
+          sar_env/bin/python -m pip install pandas pybind11 pyarrow==0.14.1
+          cd python
+          ../sar_env/bin/python setup.py install
+          cd ..
+          zip -rq sar_env.zip sar_env
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: sar_env
+          path: |
+            sar_env.zip

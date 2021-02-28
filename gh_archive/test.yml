@@ -118,3 +118,7 @@ jobs:
           path: |
             scala/target/scala-2.11/sarplus_2.11-0.2.6.jar
             python.zip
+
+# todo try this
+#apt update
+#apt install openjdk-8-jdk
