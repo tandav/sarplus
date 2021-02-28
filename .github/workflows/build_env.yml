@@ -25,7 +25,9 @@ jobs:
       - name: build conda env
         run: |
           conda create --yes --name sar_env python=3.6
-          sar_env/bin/python -m pip install pandas pybind11 pyarrow==0.14.1
+          ls
+          pwd
+          ./sar_env/bin/python -m pip install pandas pybind11 pyarrow==0.14.1
           cd python
           ../sar_env/bin/python setup.py install
           cd ..
