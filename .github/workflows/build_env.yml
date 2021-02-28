@@ -11,7 +11,7 @@ jobs:
       env:
         GRANT_SUDO: yes
       volumes:
-        - ${{ github.workspace }}:/usr/src/myapp
+        - ${{ github.workspace }}:/usr/local/envs
       options: --user root
 
 
@@ -21,13 +21,15 @@ jobs:
         run: |
           yum -y install zip
           yum group install -y "Development Tools" # install gcc on centos
+          ls
+          pwd
 
       - name: build conda env
         run: |
           conda create --yes --name sar_env python=3.6
           ls
           pwd
-          ./sar_env/bin/python -m pip install pandas pybind11 pyarrow==0.14.1
+          sar_env/bin/python -m pip install pandas pybind11 pyarrow==0.14.1
           cd python
           ../sar_env/bin/python setup.py install
           cd ..
