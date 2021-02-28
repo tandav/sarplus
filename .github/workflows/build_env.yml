@@ -29,16 +29,15 @@ jobs:
           cd python
           ../sar_env/bin/python setup.py install
           cd ..
-          zip -r9q sar_env.zip sar_env
-
-#      - name: upload artifacts
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: sar_env
-#          path: |
-#            sar_env.zip
+#          zip -r9q sar_env.zip sar_env
 
       - name: upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: sar_env.zip
+          name: sar_env.zip
+          path: sar_env
+
+#      - name: upload artifacts
+#        uses: actions/upload-artifact@v2
+#        with:
+#          path: sar_env.zip
